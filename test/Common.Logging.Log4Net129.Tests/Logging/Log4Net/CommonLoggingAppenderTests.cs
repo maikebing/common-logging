@@ -24,6 +24,7 @@ using System.Reflection;
 using Common.Logging.Simple;
 using log4net.Config;
 using log4net.Core;
+using log4net.Repository;
 using NUnit.Framework;
 
 namespace Common.Logging.Log4Net
@@ -40,10 +41,14 @@ namespace Common.Logging.Log4Net
             //            CommonLoggingAppender appender = new CommonLoggingAppender();
             //            appender.Layout = new PatternLayout("%level - %class.%method: %message");
             //            BasicConfigurator.Configure(stm);
-
             Stream stm = this.GetType().Assembly.GetManifestResourceStream(this.GetType().FullName + "_log4net.config.xml");
-            XmlConfigurator.Configure(stm);
-
+#if NETSTANDARD2_0 || NETCOREAPP2_0
+            ILoggerRepository repository = log4net.LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
+   
+            XmlConfigurator.Configure(repository, stm);
+#else
+            XmlConfigurator.Configure( stm);
+#endif
             CapturingLoggerFactoryAdapter adapter = new CapturingLoggerFactoryAdapter();
             LogManager.Adapter = adapter;
             

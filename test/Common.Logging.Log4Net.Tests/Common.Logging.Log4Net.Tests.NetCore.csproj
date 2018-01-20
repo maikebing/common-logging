@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="packages.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common.Logging.Log4Net129.Tests\Logging\Log4Net\CommonLoggingAppenderTests.cs" Link="Logging\Log4Net\CommonLoggingAppenderTests.cs" />
+    <Compile Include="..\Common.Logging.Log4Net129.Tests\Logging\Log4Net\Log4NetLoggerFactoryAdapterTests.cs" Link="Logging\Log4Net\Log4NetLoggerFactoryAdapterTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+    <PackageReference Include="NUnit" Version="3.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Common.Logging.Core\Common.Logging.Core.csproj" />
+    <ProjectReference Include="..\..\src\Common.Logging.Log4Net\Common.Logging.Log4Net.csproj" />
+    <ProjectReference Include="..\..\src\Common.Logging\Common.Logging.csproj" />
+  </ItemGroup>
+
+</Project>

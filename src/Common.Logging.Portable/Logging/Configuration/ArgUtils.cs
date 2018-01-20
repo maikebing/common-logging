@@ -147,7 +147,7 @@ namespace Common.Logging.Configuration
         public static T TryParseEnum<T>(T defaultValue, string stringValue) where T : struct
         {
             Type enumType = typeof(T);
-#if DOTNETCORE
+#if DOTNETCORE || NETSTANDARD2_0
             if (!enumType.GetTypeInfo().IsEnum)
 #elif WinRT
             if (!enumType.IsEnum())
@@ -263,8 +263,11 @@ namespace Common.Logging.Configuration
             {
                 throw new ArgumentNullException("valType");
             }
-
+#if NETSTANDARD2_0
+            if (!typeof(T).GetTypeInfo().IsAssignableFrom(valType))
+#else
             if (!typeof(T).IsAssignableFrom(valType))
+#endif 
             {
 #if PORTABLE
                 throw new ArgumentOutOfRangeException(paramName, string.Format(messageFormat, args));

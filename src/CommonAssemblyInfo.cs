@@ -16,24 +16,19 @@ using System.Security.Permissions;
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
+#if !NETSTANDARD2_0
 [assembly: CLSCompliantAttribute(true)]
-
+#endif
 #if PORTABLE
 [assembly: AssemblyConfigurationAttribute("portable; release")]
 [assembly: AssemblyInformationalVersionAttribute("3.4.1; portable; release")]
 #else
 // Note - if we decide to skip SL4+WP support and only Support SL5 then we should be able to specify AllowPartiallyTrustedCallersAttribute
 // even for Common.Logging.Core
+#if !NETSTANDARD2_0
 [assembly: AllowPartiallyTrustedCallers()]
-[assembly: AssemblyConfigurationAttribute("net-4.5.win32; release")]
-[assembly: AssemblyInformationalVersionAttribute("3.4.1; net-4.5.win32; release")]
+#endif 
 #endif
 
-[assembly: AssemblyCompanyAttribute("http://netcommon.sourceforge.net/")]
-[assembly: AssemblyCopyrightAttribute("Copyright 2006-2011 the Common Infrastructure Libraries Team.")]
-[assembly: AssemblyTrademarkAttribute("Apache License, Version 2.0")]
-[assembly: AssemblyCultureAttribute("")]
-[assembly: AssemblyVersionAttribute("3.4.1")]
-[assembly: AssemblyDelaySignAttribute(false)]
+
 

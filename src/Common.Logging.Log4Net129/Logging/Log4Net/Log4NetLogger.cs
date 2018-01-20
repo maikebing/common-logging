@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2006 the original author or authors.
+ * Copyright ?2002-2006 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,6 +123,19 @@ namespace Common.Logging.Log4Net
             {
                 lock (this.GetType())
                 {
+#if NETSTANDARD2_0
+                    StackTrace stack = new StackTrace(exception,false);
+                    Type thisType = this.GetType();
+                    callerStackBoundaryType = typeof(AbstractLogger);
+                    for (int i = 1; i < stack.GetFrames().Length; i++)
+                    {
+                        if (!IsInTypeHierarchy(thisType, stack.GetFrames()[i].GetMethod().DeclaringType))
+                        {
+                            callerStackBoundaryType = stack.GetFrames()[i - 1].GetMethod().DeclaringType;
+                            break;
+                        }
+                    }
+#else
                     StackTrace stack = new StackTrace();
                     Type thisType = this.GetType();
                     callerStackBoundaryType = typeof(AbstractLogger);
@@ -134,6 +147,7 @@ namespace Common.Logging.Log4Net
                             break;
                         }
                     }
+#endif 
                 }
             }
 
@@ -149,7 +163,11 @@ namespace Common.Logging.Log4Net
                 {
                     return true;
                 }
+#if NETSTANDARD2_0
+                currentType = currentType.GetTypeInfo().BaseType;
+#else
                 currentType = currentType.BaseType;
+#endif
             }
             return false;
         }
@@ -181,7 +199,7 @@ namespace Common.Logging.Log4Net
             }
         }
 
-        #endregion
+#endregion
 
 	    /// <summary>
 	    /// Returns the global context for variables

@@ -35,10 +35,13 @@ namespace Common.Logging.Factory
     {
         #region FormatMessageCallbackFormattedMessage
 
-        /// <summary>
-        /// Format message on demand.
-        /// </summary>
+/// <summary>
+/// Format message on demand.
+/// </summary>
+#if !NETSTANDARD2_0
+
         [CLSCompliant(false)]
+#endif 
         protected class FormatMessageCallbackFormattedMessage
         {
             /// <summary>
@@ -124,9 +127,9 @@ namespace Common.Logging.Factory
             }
         }
 
-        #endregion
+#endregion
 
-        #region StringFormatFormattedMessage
+#region StringFormatFormattedMessage
 
         /// <summary>
         /// Format string on demand.
@@ -167,7 +170,7 @@ namespace Common.Logging.Factory
             }
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Represents a method responsible for writing a message to the log system.
@@ -263,7 +266,7 @@ namespace Common.Logging.Factory
         /// <param name="exception">the exception to log (may be null)</param>
         protected abstract void WriteInternal(LogLevel level, object message, Exception exception);
 
-        #region Trace
+#region Trace
 
         /// <summary>
         /// Log a message object with the <see cref="LogLevel.Trace"/> level.
@@ -400,9 +403,9 @@ namespace Common.Logging.Factory
                 Write(LogLevel.Trace, new FormatMessageCallbackFormattedMessage(formatProvider, formatMessageCallback), exception);
         }
 
-        #endregion
+#endregion
 
-        #region Debug
+#region Debug
 
         /// <summary>
         /// Log a message object with the <see cref="LogLevel.Debug"/> level.
@@ -539,9 +542,9 @@ namespace Common.Logging.Factory
                 Write(LogLevel.Debug, new FormatMessageCallbackFormattedMessage(formatProvider, formatMessageCallback), exception);
         }
 
-        #endregion
+#endregion
 
-        #region Info
+#region Info
 
         /// <summary>
         /// Log a message object with the <see cref="LogLevel.Info"/> level.
@@ -678,9 +681,9 @@ namespace Common.Logging.Factory
                 Write(LogLevel.Info, new FormatMessageCallbackFormattedMessage(formatProvider, formatMessageCallback), exception);
         }
 
-        #endregion
+#endregion
 
-        #region Warn
+#region Warn
 
         /// <summary>
         /// Log a message object with the <see cref="LogLevel.Warn"/> level.
@@ -817,9 +820,9 @@ namespace Common.Logging.Factory
                 Write(LogLevel.Warn, new FormatMessageCallbackFormattedMessage(formatProvider, formatMessageCallback), exception);
         }
 
-        #endregion
+#endregion
 
-        #region Error
+#region Error
 
         /// <summary>
         /// Log a message object with the <see cref="LogLevel.Error"/> level.
@@ -956,9 +959,9 @@ namespace Common.Logging.Factory
                 Write(LogLevel.Error, new FormatMessageCallbackFormattedMessage(formatProvider, formatMessageCallback), exception);
         }
 
-        #endregion
+#endregion
 
-        #region Fatal
+#region Fatal
 
         /// <summary>
         /// Log a message object with the <see cref="LogLevel.Fatal"/> level.
@@ -1095,7 +1098,7 @@ namespace Common.Logging.Factory
                 Write(LogLevel.Fatal, new FormatMessageCallbackFormattedMessage(formatProvider, formatMessageCallback), exception);
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Returns the global context for variables

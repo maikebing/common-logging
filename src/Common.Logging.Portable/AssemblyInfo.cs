@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 
 using Common.Logging;
 
-[assembly: System.Reflection.AssemblyProduct("Common Logging Framework")]
 [assembly: System.Security.SecurityTransparent]
 
 [assembly: TypeForwardedTo(typeof(FormatMessageHandler))]

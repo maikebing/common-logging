@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2009 the original author or authors.
+ * Copyright ?2002-2009 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -253,7 +253,7 @@ namespace Common.Logging
         }
 
 
-#if PORTABLE && !SILVERLIGHT && !NET20
+#if (NETSTANDARD2_0 || PORTABLE) && !SILVERLIGHT && !NET20 
 
         /// <summary>
         /// Gets the logger by calling <see cref="ILoggerFactoryAdapter.GetLogger(Type)"/>
@@ -337,10 +337,13 @@ namespace Common.Logging
             var stackFrameType = Type.GetType("System.Diagnostics.StackFrame");
             if (stackFrameType == null)
                 throw new PlatformNotSupportedException("CreateGetClassNameFunction is only supported on platforms where System.Diagnostics.StackFrame exist");
-
+#if NETSTANDARD2_0
+            var constructor = stackFrameType.GetTypeInfo(). GetConstructor(new[] { typeof(int) });
+            var getMethodMethod = stackFrameType.GetTypeInfo().GetMethod("GetMethod");
+#else
             var constructor = stackFrameType.GetConstructor(new[] { typeof(int) });
             var getMethodMethod = stackFrameType.GetMethod("GetMethod");
-
+#endif
             if (constructor == null)
                 throw new PlatformNotSupportedException("StackFrame(int skipFrames) constructor not present");
             if (getMethodMethod == null)
@@ -358,7 +361,11 @@ namespace Common.Logging
             // Expression<TDelegate>.Compile  is missing in portable libraries targeting silverlight
             // but it is present on silverlight so we can just call it 
             //var function = lambda.Compile();
+#if NETSTANDARD2_0
+            var compileFunction = lambda.GetType().GetTypeInfo().GetMethod("Compile", new Type[0]);
+#else
             var compileFunction = lambda.GetType().GetMethod("Compile", new Type[0]);
+#endif 
             var function = (Func<MethodBase>)compileFunction.Invoke(lambda, null);
 
             return function;
@@ -412,12 +419,12 @@ namespace Common.Logging
         ILog ILogManager.GetCurrentClassLogger() { return GetCurrentClassLogger(); }
 #endif
 
-        /// <summary>
-        /// Gets the logger by calling <see cref="ILoggerFactoryAdapter.GetLogger(Type)"/>
-        /// on the currently configured <see cref="Adapter"/> using the specified type.
-        /// </summary>
-        /// <returns>the logger instance obtained from the current <see cref="Adapter"/></returns>
-        public static ILog GetLogger<T>()
+            /// <summary>
+            /// Gets the logger by calling <see cref="ILoggerFactoryAdapter.GetLogger(Type)"/>
+            /// on the currently configured <see cref="Adapter"/> using the specified type.
+            /// </summary>
+            /// <returns>the logger instance obtained from the current <see cref="Adapter"/></returns>
+            public static ILog GetLogger<T>()
         {
             return Adapter.GetLogger(typeof(T));
         }

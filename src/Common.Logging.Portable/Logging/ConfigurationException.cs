@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2009 the original author or authors.
+ * Copyright ?2002-2009 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,17 @@ namespace Common.Logging
     /// The exception that is thrown when a configuration system error has occurred with Common.Logging
     /// </summary>
     /// <author>Mark Pollack</author>
-#if PORTABLE
+#if NETSTANDARD2_0
+    [Serializable]
+    public class ConfigurationException : Exception
+#elif PORTABLE
     public class ConfigurationException : Exception
 #else
-    [Serializable]
+[Serializable]
     public class ConfigurationException : ApplicationException
 #endif
     {
-        #region Constructor (s) / Destructor
+#region Constructor (s) / Destructor
 
         /// <summary>Creates a new instance of the ObjectsException class.</summary>
         public ConfigurationException()
@@ -69,7 +72,7 @@ namespace Common.Logging
         {
         }
 
-#if PORTABLE
+#if PORTABLE || NETSTANDARD2_0
 #else
        /// <summary>
         /// Creates a new instance of the ConfigurationException class.

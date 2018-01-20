@@ -416,12 +416,14 @@ namespace Common.Logging.Simple
         {
             switch (eventType)
             {
+#if !NETSTANDARD2_0
                 case TraceEventType.Start:
                 case TraceEventType.Stop:
                 case TraceEventType.Suspend:
                 case TraceEventType.Resume:
                 case TraceEventType.Transfer:
                     return LogLevel.Trace;
+#endif 
                 case TraceEventType.Verbose:
                     return LogLevel.Debug;
                 case TraceEventType.Information:

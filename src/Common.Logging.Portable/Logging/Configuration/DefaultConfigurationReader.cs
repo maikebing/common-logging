@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2009 the original author or authors.
+ * Copyright ?2002-2009 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,14 @@
 
 #endregion
 
-using System;
+
+#if  NETSTANDARD2_0 
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.UserSecrets;
+#endif
+
 namespace Common.Logging.Configuration
 {
     /// <summary>
@@ -28,6 +35,13 @@ namespace Common.Logging.Configuration
     /// <author>Mark Pollack</author>
     public class DefaultConfigurationReader : IConfigurationReader
     {
+#if NETSTANDARD2_0
+     
+      
+
+        public IConfiguration Configuration { get; }
+
+#endif 
         /// <summary>
         /// Parses the configuration section and returns the resulting object.
         /// Using the <c>System.Configuration.ConfigurationManager</c>
@@ -45,7 +59,11 @@ namespace Common.Logging.Configuration
         /// </remarks>
         public object GetSection(string sectionName)
         {
-#if DOTNETCORE     // No System.Configuration in DotNetCore, replace with something DotNetCore-specific?
+
+#if DOTNETCORE  // No System.Configuration in DotNetCore, replace with something DotNetCore-specific?
+            
+          
+              
             return null;
 #else
 #if PORTABLE
@@ -67,7 +85,9 @@ namespace Common.Logging.Configuration
                 throw new PlatformNotSupportedException("Could not find System.Configuration.ConfigurationManager.GetSection method");
 
             return getSection.Invoke(null, new[] {sectionName});
-#else
+#elif  NETSTANDARD2_0
+            return Configuration.GetSection(sectionName);
+#else 
             return System.Configuration.ConfigurationManager.GetSection(sectionName);
 #endif
 #endif

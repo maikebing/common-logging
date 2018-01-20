@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2009 the original author or authors.
+ * Copyright ?2002-2009 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ using System.IO;
 using Common.Logging.Factory;
 using Common.Logging.Configuration;
 using log4net.Config;
+using log4net.Repository;
 
 namespace Common.Logging.Log4Net
 {
@@ -123,10 +124,52 @@ namespace Common.Logging.Log4Net
 
         private class Log4NetRuntime : ILog4NetRuntime
         {
+#if NETSTANDARD2_0
+            private ILoggerRepository repository =log4net.LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
+            public void XmlConfiguratorConfigure()
+            {
+                XmlConfigurator.Configure(repository);
+            }
+            public void XmlConfiguratorConfigure(string configFile)
+            {
+                XmlConfigurator.Configure(repository,new FileInfo(configFile));
+
+            }
+            public void XmlConfiguratorConfigureAndWatch(string configFile)
+            {
+                XmlConfigurator.ConfigureAndWatch(repository,new FileInfo(configFile));
+            }
+            public void BasicConfiguratorConfigure(ILoggerRepository repository)
+            {
+                BasicConfigurator.Configure(repository);
+            }
+            public void XmlConfiguratorConfigure(ILoggerRepository repository)
+            {
+                XmlConfigurator.Configure(repository);
+            }
+            public void XmlConfiguratorConfigure(ILoggerRepository repository,string configFile)
+            {
+                XmlConfigurator.Configure(repository, new FileInfo(configFile));
+
+            }
+            public void XmlConfiguratorConfigureAndWatch(ILoggerRepository repository, string configFile)
+            {
+                XmlConfigurator.ConfigureAndWatch(repository, new FileInfo(configFile));
+            }
+            public void BasicConfiguratorConfigure()
+            {
+                BasicConfigurator.Configure(repository);
+            }
+            public log4net.ILog GetLogger(string name)
+            {
+                return log4net.LogManager.GetLogger(System.Reflection.Assembly.GetEntryAssembly(),name);
+            }
+#else
             public void XmlConfiguratorConfigure()
             {
                 XmlConfigurator.Configure();
             }
+            
             public void XmlConfiguratorConfigure(string configFile)
             {
                 XmlConfigurator.Configure(new FileInfo(configFile));
@@ -139,10 +182,14 @@ namespace Common.Logging.Log4Net
             {
                 BasicConfigurator.Configure();
             }
-            public log4net.ILog GetLogger(string name)
+              public log4net.ILog GetLogger(string name)
             {
                 return log4net.LogManager.GetLogger(name);
             }
+#endif
+
+
+
         }
 
         private readonly ILog4NetRuntime _runtime;
@@ -188,7 +235,12 @@ namespace Common.Logging.Log4Net
             // app-relative path?
             if (configFile.StartsWith("~/") || configFile.StartsWith("~\\"))
             {
+#if NETSTANDARD2_0
+                configFile = string.Format("{0}/{1}", AppContext.BaseDirectory.TrimEnd('/', '\\'), configFile.Substring(2));
+#else
+
                 configFile = string.Format("{0}/{1}", AppDomain.CurrentDomain.BaseDirectory.TrimEnd('/', '\\'), configFile.Substring(2));
+#endif 
             }
 
             if (configType == "FILE" || configType == "FILE-WATCH")

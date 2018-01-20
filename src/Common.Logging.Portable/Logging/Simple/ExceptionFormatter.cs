@@ -98,11 +98,12 @@ namespace Common.Logging.Simple
 
         private static void OutputDetails(IFormatProvider formatProvider, StringBuilder sb, Exception exception)
         {
-#if PORTABLE && !WinRT && !DOTNETCORE
+#if PORTABLE && !WinRT && !DOTNETCORE && !NETSTANDARD2_0
             sb.AppendFormat(formatProvider, "Thread ID : {0}\r\n", Thread.CurrentThread.ManagedThreadId);
 #endif
 
-#if !PORTABLE
+
+#if !PORTABLE && !NETSTANDARD2_0
             // output exception details:
             //
             //	Method        :  set_Attributes
@@ -154,8 +155,11 @@ namespace Common.Logging.Simple
             //
 #if WinRT
             var properties = exception.GetType().GetProperties();
-
+#elif NETSTANDARD2_0
+            var properties = exception.GetType().GetTypeInfo().GetProperties(BindingFlags.FlattenHierarchy |
+                        BindingFlags.Instance | BindingFlags.Public);
 #else
+
             var properties = exception.GetType().GetProperties(BindingFlags.FlattenHierarchy |
                 BindingFlags.Instance | BindingFlags.Public);
 #endif
@@ -184,7 +188,7 @@ namespace Common.Logging.Simple
                 }
 
                 var enumerableValue = propertyValue as IEnumerable;
-#if WinRT || DOTNETCORE
+#if WinRT || DOTNETCORE || NETSTANDARD2_0
                 var propertyTypeName = property.PropertyType.Name;
 #else
                 var propertyTypeName = property.ReflectedType.Name;
@@ -239,7 +243,7 @@ namespace Common.Logging.Simple
                 exception.StackTrace);
         }
 
-#if !PORTABLE
+#if !PORTABLE && !NETSTANDARD2_0
         private static void SafeGetTargetSiteInfo(Exception exception, out String assemblyName, out String assemblyModulePath,
            out String typeName, out String methodName)
         {
@@ -263,6 +267,7 @@ namespace Common.Logging.Simple
 
                 assemblyModulePath = assemblyModule.FullyQualifiedName;
             }
+ 
         }
 
         private static void SafeGetSourceAndHelplink(Exception exception, out String source, out String helplink)
@@ -272,5 +277,5 @@ namespace Common.Logging.Simple
         }
 #endif
 
-    }
+        }
 }

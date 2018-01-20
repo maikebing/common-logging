@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2009 the original author or authors.
+ * Copyright ?2002-2009 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,12 +54,20 @@ namespace Common.Logging
     /// &lt;/configuration&gt;
     /// </code>
     /// </example>
+#if NETSTANDARD2_0
+    public class ConfigurationSectionHandler 
+    { 
+
+      }
+#else
+
     public class ConfigurationSectionHandler : IConfigurationSectionHandler
     {
 
-        #region Fields
 
-        private static readonly string LOGFACTORYADAPTER_ELEMENT = "factoryAdapter";
+    #region Fields
+
+    private static readonly string LOGFACTORYADAPTER_ELEMENT = "factoryAdapter";
         private static readonly string LOGFACTORYADAPTER_ELEMENT_TYPE_ATTRIB = "type";
         private static readonly string ARGUMENT_ELEMENT = "arg";
         private static readonly string ARGUMENT_ELEMENT_KEY_ATTRIB = "key";
@@ -228,4 +236,5 @@ namespace Common.Logging
 
         #endregion
     }
+#endif
 }
